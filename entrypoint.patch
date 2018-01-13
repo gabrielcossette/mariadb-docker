@@ -1,0 +1,11 @@
+--- docker-entrypoint.sh	2018-01-12 23:37:13.267897742 -0500
++++ entrypoint_modif	2018-01-12 23:36:16.008319312 -0500
+@@ -188,4 +188,8 @@
+ 	fi
+ fi
+ 
++echo "USE mysql;" | "${mysql[@]}"
++echo "UPDATE USER SET USER='admin' WHERE USER='root';" | "${mysql[@]}"
++echo "FLUSH PRIVILEGES;" | "${mysql[@]}"
++
+ exec "$@"
