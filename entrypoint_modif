@@ -188,8 +188,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	fi
 fi
 
-echo "USE mysql;" | "${mysql[@]}"
-echo "UPDATE USER SET USER='admin' WHERE USER='root';" | "${mysql[@]}"
-echo "FLUSH PRIVILEGES;" | "${mysql[@]}"
+		"${mysql[@]}" <<-EOSQL
+			USE mysql ;
+			UPDATE USER SET USER='admin' WHERE USER='root' ;
+			FLUSH PRIVILEGES ;
+		EOSQL
 
 exec "$@"
