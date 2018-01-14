@@ -1,6 +1,6 @@
 FROM mariadb
 
-RUN apt-get install -y patch
+RUN apt-get update && apt-get install -y patch
 
 ADD entrypoint.patch ./
 
