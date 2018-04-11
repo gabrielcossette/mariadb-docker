@@ -189,7 +189,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	
 	else
 
-	mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
+#	mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
 	
 	fi
 fi

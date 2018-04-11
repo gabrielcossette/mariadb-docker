@@ -1,5 +1,5 @@
---- docker-entrypoint.sh	2018-04-10 23:06:02.300777790 -0400
-+++ entrypoint_modif	2018-04-10 23:05:57.096886148 -0400
+--- docker-entrypoint.sh	2018-04-10 23:29:42.661492108 -0400
++++ entrypoint_modif	2018-04-10 23:29:29.933551066 -0400
 @@ -40,6 +40,11 @@
  	unset "$fileVar"
  }
@@ -57,7 +57,7 @@
 +	
 +	else
 +
-+	mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
++#	mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
 +	
  	fi
  fi
