@@ -189,7 +189,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	
 	else
 
-    mysql=( mysql -uroot -hlocalhost -p"${MYSQL_ROOT_PASSWORD}" )
+    SOCKET="$(_get_config 'socket' "$@")"
+	"$@" --skip-networking --socket="${SOCKET}" &
+	pid="$!"
+	mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" -p"${MYSQL_ROOT_PASSWORD}" )
 	
 	echo "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';" | "${mysql[@]}"
 	
