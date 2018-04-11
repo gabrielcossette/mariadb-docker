@@ -189,14 +189,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	
 	else
 
-    SOCKET="$(_get_config 'socket' "$@")"
-	"$@" --skip-networking --socket="${SOCKET}" &
-	pid="$!"
-	mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" -p"${MYSQL_ROOT_PASSWORD}" )
-	
-	echo "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';" | "${mysql[@]}"
-	
-	echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+	mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
 	
 	fi
 fi
