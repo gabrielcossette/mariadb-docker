@@ -1,5 +1,5 @@
---- docker-entrypoint.sh	2018-04-13 12:42:45.860350873 -0400
-+++ entrypoint_modif	2018-04-13 12:42:03.624651735 -0400
+--- docker-entrypoint.sh	2018-04-13 12:53:21.895205983 -0400
++++ entrypoint_modif	2018-04-13 12:53:18.374897663 -0400
 @@ -40,6 +40,12 @@
  	unset "$fileVar"
  }
@@ -76,7 +76,7 @@
 +			exit 1
 +		fi
 +
-+#		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
++		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
 +	
 +		if ! kill -s TERM "$pid" || ! wait "$pid"; then
 +			echo >&2 'MySQL init process failed.'
