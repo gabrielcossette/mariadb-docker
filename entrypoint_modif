@@ -189,8 +189,16 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	
 	else
 
-#	mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
+		SOCKET="$(_get_config 'socket' "$@")"
+		"$@" --skip-networking --socket="${SOCKET}" &
+		pid="$!"
+
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
 	
+		if ! kill -s TERM "$pid" || ! wait "$pid"; then
+			echo >&2 'MySQL init process failed.'
+			exit 1
+		fi
 	fi
 fi
 

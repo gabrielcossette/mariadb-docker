@@ -1,5 +1,5 @@
---- docker-entrypoint.sh	2018-04-10 23:29:42.661492108 -0400
-+++ entrypoint_modif	2018-04-10 23:29:29.933551066 -0400
+--- docker-entrypoint.sh	2018-04-12 22:34:25.421405943 -0400
++++ entrypoint_modif	2018-04-12 22:34:15.029459830 -0400
 @@ -40,6 +40,11 @@
  	unset "$fileVar"
  }
@@ -50,15 +50,23 @@
  			fi
  
  			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
-@@ -185,6 +186,11 @@
+@@ -185,6 +186,19 @@
  		echo
  		echo 'MySQL init process done. Ready for start up.'
  		echo
 +	
 +	else
 +
-+#	mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
++		SOCKET="$(_get_config 'socket' "$@")"
++		"$@" --skip-networking --socket="${SOCKET}" &
++		pid="$!"
++
++		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
 +	
++		if ! kill -s TERM "$pid" || ! wait "$pid"; then
++			echo >&2 'MySQL init process failed.'
++			exit 1
++		fi
  	fi
  fi
  
