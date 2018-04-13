@@ -1,5 +1,5 @@
---- docker-entrypoint.sh	2018-04-12 22:58:54.965384278 -0400
-+++ entrypoint_modif	2018-04-12 22:58:48.957421417 -0400
+--- docker-entrypoint.sh	2018-04-12 23:05:12.351059643 -0400
++++ entrypoint_modif	2018-04-12 23:05:06.347096503 -0400
 @@ -40,6 +40,11 @@
  	unset "$fileVar"
  }
@@ -61,7 +61,7 @@
 +		"$@" --skip-networking --socket="${SOCKET}" &
 +		pid="$!"
 +
-+		mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" )
++		mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" -p"${MYSQL_ROOT_PASSWORD}")
 +
 +		for i in {30..0}; do
 +			if echo 'SELECT 1' | "${mysql[@]}" &> /dev/null; then
