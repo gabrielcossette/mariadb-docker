@@ -171,6 +171,11 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 
 		if [ "$MYSQL_USER_WP" -a "$MYSQL_PASSWORD_WP" ]; then
 			echo "CREATE USER '$MYSQL_USER_WP'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_WP' ;" | "${mysql[@]}"
+
+			if [ "$MYSQL_DATABASE_WP" ]; then
+				echo "GRANT ALL ON \`$MYSQL_DATABASE_WP\`.* TO '$MYSQL_USER_WP'@'%' ;" | "${mysql[@]}"
+			fi
+			
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 		fi		
 
