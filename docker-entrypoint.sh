@@ -40,11 +40,11 @@ file_env() {
 	unset "$fileVar"
 }
 
-file_env 'MYSQL_ROOT_HOST' '%'
-file_env 'MYSQL_DATABASE'
-file_env 'MYSQL_USER'
 file_env 'MYSQL_ROOT_PASSWORD'
-file_env 'MYSQL_PASSWORD'
+file_env 'MYSQL_PASSWORD_ADMIN'
+file_env 'MYSQL_PASSWORD_WP'
+file_env 'MYSQL_PASSWORD_PYDIO'
+file_env 'MYSQL_PASSWORD_PMA'
 
 _check_config() {
 	toRun=( "$@" --verbose --help --log-bin-index="$(mktemp -u)" )
@@ -153,18 +153,44 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		fi
 
 
-		if [ "$MYSQL_DATABASE" ]; then
-			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\` ;" | "${mysql[@]}"
-			mysql+=( "$MYSQL_DATABASE" )
+		if [ "$MYSQL_DATABASE_PYDIO" ]; then
+			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE_PYDIO\` ;" | "${mysql[@]}"
+			mysql+=( "$MYSQL_DATABASE_PYDIO" )
 		fi
 
-		if [ "$MYSQL_USER" -a "$MYSQL_PASSWORD" ]; then
-			echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' ;" | "${mysql[@]}"
+		if [ "$MYSQL_DATABASE_PMA" ]; then
+			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE_PMA\` ;" | "${mysql[@]}"
+			mysql+=( "$MYSQL_DATABASE_PMA" )
+		fi
+		
+		if [ "$MYSQL_USER_ADMIN" -a "$MYSQL_PASSWORD_ADMIN" ]; then
+			echo "CREATE USER '$MYSQL_USER_ADMIN'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_ADMIN' ;" | "${mysql[@]}"
+			echo "GRANT ALL ON *.* TO '$MYSQL_USER_ADMIN'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
+			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+		fi
 
-			if [ "$MYSQL_DATABASE" ]; then
-				echo "GRANT ALL ON *.* TO '$MYSQL_USER'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
+		if [ "$MYSQL_USER_WP" -a "$MYSQL_PASSWORD_WP" ]; then
+			echo "CREATE USER '$MYSQL_USER_WP'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_WP' ;" | "${mysql[@]}"
+			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+		fi		
+
+		if [ "$MYSQL_USER_PYDIO" -a "$MYSQL_PASSWORD_PYDIO" ]; then
+			echo "CREATE USER '$MYSQL_USER_PYDIO'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_PYDIO' ;" | "${mysql[@]}"
+
+			if [ "$MYSQL_DATABASE_PYDIO" ]; then
+				echo "GRANT ALL ON \`$MYSQL_DATABASE_PYDIO\`.* TO '$MYSQL_USER_PYDIO'@'%' ;" | "${mysql[@]}"
 			fi
+			
+			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+		fi
 
+		if [ "$MYSQL_USER_PMA" -a "$MYSQL_PASSWORD_PMA" ]; then
+			echo "CREATE USER '$MYSQL_USER_PMA'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_PMA' ;" | "${mysql[@]}"
+
+			if [ "$MYSQL_DATABASE_PMA" ]; then
+				echo "GRANT ALL ON \`$MYSQL_DATABASE_PMA\`.* TO '$MYSQL_USER_PMA'@'%' ;" | "${mysql[@]}"
+			fi
+			
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 		fi
 
@@ -208,8 +234,11 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			exit 1
 		fi
 
-		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
-	
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_ADMIN'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_ADMIN';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_WP'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_WP';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PYDIO'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_PYDIO';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PMA'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_PMA';"
+		
 		if ! kill -s TERM "$pid" || ! wait "$pid"; then
 			echo >&2 'MySQL init process failed.'
 			exit 1
