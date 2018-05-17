@@ -239,10 +239,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			exit 1
 		fi
 
-		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_ADMIN'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD_ADMIN';"
-		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_WP'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD_WP';"
-		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PYDIO'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD_PYDIO';"
-		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PMA'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD_PMA';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_ADMIN'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD_ADMIN}';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_WP'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD_WP}';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PYDIO'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD_PYDIO}';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PMA'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD_PMA}';"
 		
 		if ! kill -s TERM "$pid" || ! wait "$pid"; then
 			echo >&2 'MySQL init process failed.'
