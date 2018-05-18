@@ -155,12 +155,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 
 		if [ "$MYSQL_DATABASE_PYDIO" ]; then
 			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE_PYDIO\` ;" | "${mysql[@]}"
-			mysql+=( "$MYSQL_DATABASE_PYDIO" )
 		fi
 
 		if [ "$MYSQL_DATABASE_PMA" ]; then
 			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE_PMA\` ;" | "${mysql[@]}"
-			mysql+=( "$MYSQL_DATABASE_PMA" )
 		fi
 		
 		if [ "$MYSQL_USER_ADMIN" -a "$MYSQL_PASSWORD_ADMIN" ]; then
