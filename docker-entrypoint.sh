@@ -124,6 +124,8 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			echo "GENERATED ROOT PASSWORD: $MYSQL_ROOT_PASSWORD"
 		fi
 
+		echo "Test1"
+
 		rootCreate=
 		# default root to listen for connections from anywhere
 		if [ ! -z "$MYSQL_ROOT_HOST" -a "$MYSQL_ROOT_HOST" != 'localhost' ]; then
@@ -148,6 +150,8 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			FLUSH PRIVILEGES ;
 		EOSQL
 
+		echo "Test2"
+
 		if [ ! -z "$MYSQL_ROOT_PASSWORD" ]; then
 			mysql+=( -p"${MYSQL_ROOT_PASSWORD}" )
 		fi
@@ -156,6 +160,8 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		if [ "$MYSQL_DATABASE_PYDIO" ]; then
 			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE_PYDIO\` ;" | "${mysql[@]}"
 		fi
+
+		echo "Test3"
 
 		if [ "$MYSQL_DATABASE_PMA" ]; then
 			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE_PMA\` ;" | "${mysql[@]}"
