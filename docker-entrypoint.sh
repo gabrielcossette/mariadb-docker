@@ -46,6 +46,8 @@ file_env 'MYSQL_PASSWORD_WP'
 file_env 'MYSQL_PASSWORD_PYDIO'
 file_env 'MYSQL_PASSWORD_PMA'
 
+#sed -i -e "s/username1/$PYDIO_DB_NAME/g" /docker-entrypoint-initdb.d/create_tables.sql
+
 _check_config() {
 	toRun=( "$@" --verbose --help --log-bin-index="$(mktemp -u)" )
 	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
