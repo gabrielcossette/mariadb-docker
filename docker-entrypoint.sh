@@ -41,13 +41,26 @@ file_env() {
 }
 
 file_env 'MYSQL_ROOT_PASSWORD'
-file_env 'MYSQL_PASSWORD_ADMIN'
+file_env 'MYSQL_PASSWORD_USER1'
+file_env 'MYSQL_PASSWORD_USER2'
+file_env 'MYSQL_PASSWORD_USER3'
+file_env 'MYSQL_USER_USER1'
+file_env 'MYSQL_USER_USER2'
+file_env 'MYSQL_USER_USER3'
+file_env 'MYSQL_SECRET_USER1'
+file_env 'MYSQL_SECRET_USER2'
+file_env 'MYSQL_SECRET_USER3'
 file_env 'MYSQL_PASSWORD_WP'
 file_env 'MYSQL_PASSWORD_PYDIO'
 file_env 'MYSQL_PASSWORD_PMA'
 
 if [ ! -f /first_run_passed ]; then
-sed -i -e "s/username1/$PYDIO_DB_NAME/g" /docker-entrypoint-initdb.d/create_tables.sql
+sed -i -e "s/username1/$MYSQL_USER_USER1/g" /update_tables.sql
+sed -i -e "s/username2/$MYSQL_USER_USER2/g" /update_tables.sql
+sed -i -e "s/username3/$MYSQL_USER_USER3/g" /update_tables.sql
+sed -i -e "s/SECRETUSER1/$MYSQL_SECRET_USER1/g" /update_tables.sql
+sed -i -e "s/SECRETUSER2/$MYSQL_SECRET_USER2/g" /update_tables.sql
+sed -i -e "s/SECRETUSER3/$MYSQL_SECRET_USER3/g" /update_tables.sql
 touch /first_run_passed
 fi
 
@@ -167,9 +180,21 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE_PMA\` ;" | "${mysql[@]}"
 		fi
 		
-		if [ "$MYSQL_USER_ADMIN" -a "$MYSQL_PASSWORD_ADMIN" ]; then
-			echo "CREATE USER '$MYSQL_USER_ADMIN'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_ADMIN' ;" | "${mysql[@]}"
-			echo "GRANT ALL ON *.* TO '$MYSQL_USER_ADMIN'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
+		if [ "$MYSQL_USER_USER1" -a "$MYSQL_PASSWORD_USER1" ]; then
+			echo "CREATE USER '$MYSQL_USER_USER1'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_USER1' ;" | "${mysql[@]}"
+			echo "GRANT ALL ON *.* TO '$MYSQL_USER_USER1'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
+			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+		fi
+
+		if [ "$MYSQL_USER_USER2" -a "$MYSQL_PASSWORD_USER2" ]; then
+			echo "CREATE USER '$MYSQL_USER_USER2'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_USER2' ;" | "${mysql[@]}"
+			echo "GRANT ALL ON *.* TO '$MYSQL_USER_USER2'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
+			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+		fi
+
+		if [ "$MYSQL_USER_USER3" -a "$MYSQL_PASSWORD_USER3" ]; then
+			echo "CREATE USER '$MYSQL_USER_USER3'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_USER3' ;" | "${mysql[@]}"
+			echo "GRANT ALL ON *.* TO '$MYSQL_USER_USER3'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 		fi
 
@@ -202,6 +227,13 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 		fi
+
+		sed -i -e "s/username1/$MYSQL_USER_USER1/g" /docker-entrypoint-initdb.d/create_tables.sql
+		sed -i -e "s/username2/$MYSQL_USER_USER2/g" /docker-entrypoint-initdb.d/create_tables.sql
+		sed -i -e "s/username3/$MYSQL_USER_USER3/g" /docker-entrypoint-initdb.d/create_tables.sql
+		sed -i -e "s/SECRETUSER1/$MYSQL_SECRET_USER1/g" /docker-entrypoint-initdb.d/create_tables.sql
+		sed -i -e "s/SECRETUSER2/$MYSQL_SECRET_USER2/g" /docker-entrypoint-initdb.d/create_tables.sql
+		sed -i -e "s/SECRETUSER3/$MYSQL_SECRET_USER3/g" /docker-entrypoint-initdb.d/create_tables.sql
 
 		echo
 		for f in /docker-entrypoint-initdb.d/*; do
@@ -243,10 +275,14 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			exit 1
 		fi
 
-		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_ADMIN'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_ADMIN}';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_USER1'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_USER1}';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_USER2'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_USER2}';"
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_USER3'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_USER3}';"
 		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_WP'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_WP}';"
 		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PYDIO'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_PYDIO}';"
 		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PMA'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_PMA}';"
+		
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" < /update_table.sql
 		
 		if ! kill -s TERM "$pid" || ! wait "$pid"; then
 			echo >&2 'MySQL init process failed.'
