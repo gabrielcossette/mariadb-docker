@@ -54,17 +54,6 @@ file_env 'MYSQL_PASSWORD_WP'
 file_env 'MYSQL_PASSWORD_PYDIO'
 file_env 'MYSQL_PASSWORD_PMA'
 
-if [ ! -f /first_run_passed ]; then
-sed -i -e "s/username1/$MYSQL_USER_USER1/g" /update_tables.sql
-sed -i -e "s/username2/$MYSQL_USER_USER2/g" /update_tables.sql
-sed -i -e "s/username3/$MYSQL_USER_USER3/g" /update_tables.sql
-sed -i -e "s/SECRETUSER1/$MYSQL_SECRET_USER1/g" /update_tables.sql
-sed -i -e "s/SECRETUSER2/$MYSQL_SECRET_USER2/g" /update_tables.sql
-sed -i -e "s/SECRETUSER3/$MYSQL_SECRET_USER3/g" /update_tables.sql
-touch /first_run_passed
-fi
-
-
 _check_config() {
 	toRun=( "$@" --verbose --help --log-bin-index="$(mktemp -u)" )
 	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
@@ -228,12 +217,13 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 		fi
 
-		sed -i -e "s/username1/$MYSQL_USER_USER1/g" /docker-entrypoint-initdb.d/create_tables.sql
-		sed -i -e "s/username2/$MYSQL_USER_USER2/g" /docker-entrypoint-initdb.d/create_tables.sql
-		sed -i -e "s/username3/$MYSQL_USER_USER3/g" /docker-entrypoint-initdb.d/create_tables.sql
-		sed -i -e "s/SECRETUSER1/$MYSQL_SECRET_USER1/g" /docker-entrypoint-initdb.d/create_tables.sql
-		sed -i -e "s/SECRETUSER2/$MYSQL_SECRET_USER2/g" /docker-entrypoint-initdb.d/create_tables.sql
-		sed -i -e "s/SECRETUSER3/$MYSQL_SECRET_USER3/g" /docker-entrypoint-initdb.d/create_tables.sql
+		cp /create_table.sql /docker-entrypoint-initdb.d/create_table_modif.sql
+		sed -i -e "s/username1/$MYSQL_USER_USER1/g" /docker-entrypoint-initdb.d/create_table_modif.sql
+		sed -i -e "s/username2/$MYSQL_USER_USER2/g" /docker-entrypoint-initdb.d/create_table_modif.sql
+		sed -i -e "s/username3/$MYSQL_USER_USER3/g" /docker-entrypoint-initdb.d/create_table_modif.sql
+		sed -i -e "s/SECRETUSER1/$MYSQL_SECRET_USER1/g" /docker-entrypoint-initdb.d/create_table_modif.sql
+		sed -i -e "s/SECRETUSER2/$MYSQL_SECRET_USER2/g" /docker-entrypoint-initdb.d/create_table_modif.sql
+		sed -i -e "s/SECRETUSER3/$MYSQL_SECRET_USER3/g" /docker-entrypoint-initdb.d/create_table_modif.sql
 
 		echo
 		for f in /docker-entrypoint-initdb.d/*; do
@@ -282,7 +272,14 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PYDIO'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_PYDIO}';"
 		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PMA'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_PMA}';"
 		
-		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" < /update_table.sql
+		cp /update_table /update_table_modif
+		sed -i -e "s/username1/$MYSQL_USER_USER1/g" /update_table_modif.sql
+		sed -i -e "s/username2/$MYSQL_USER_USER2/g" /update_table_modif.sql
+		sed -i -e "s/username3/$MYSQL_USER_USER3/g" /update_table_modif.sql
+		sed -i -e "s/SECRETUSER1/$MYSQL_SECRET_USER1/g" /update_table_modif.sql
+		sed -i -e "s/SECRETUSER2/$MYSQL_SECRET_USER2/g" /update_table_modif.sql
+		sed -i -e "s/SECRETUSER3/$MYSQL_SECRET_USER3/g" /update_table_modif.sql
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" < /update_table_modif.sql
 		
 		if ! kill -s TERM "$pid" || ! wait "$pid"; then
 			echo >&2 'MySQL init process failed.'
