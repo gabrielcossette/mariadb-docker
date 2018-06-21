@@ -34,7 +34,7 @@ file_env() {
 	if [ "${!var:-}" ]; then
 		val="${!var}"
 	elif [ "${!fileVar:-}" ]; then
-		val="$(< "${!fileVar}")"
+		val="$(<	 "${!fileVar}")"
 	fi
 	export "$var"="$val"
 	unset "$fileVar"
@@ -169,25 +169,28 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE_PMA\` ;" | "${mysql[@]}"
 		fi
 		
-		if [ "$MYSQL_USER_USER1" -a "$MYSQL_PASSWORD_USER1" ]; then
+		if [ "$MYSQL_USER_USER1" ]; then
 			echo "CREATE USER '$MYSQL_USER_USER1'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_USER1' ;" | "${mysql[@]}"
 			echo "GRANT ALL ON *.* TO '$MYSQL_USER_USER1'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+			echo "User 1 created"
 		fi
 
-		if [ "$MYSQL_USER_USER2" -a "$MYSQL_PASSWORD_USER2" ]; then
+		if [ "$MYSQL_USER_USER2" ]; then
 			echo "CREATE USER '$MYSQL_USER_USER2'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_USER2' ;" | "${mysql[@]}"
 			echo "GRANT ALL ON *.* TO '$MYSQL_USER_USER2'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+			echo "User 2 created";
 		fi
 
-		if [ "$MYSQL_USER_USER3" -a "$MYSQL_PASSWORD_USER3" ]; then
+		if [ "$MYSQL_USER_USER3" ]; then
 			echo "CREATE USER '$MYSQL_USER_USER3'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_USER3' ;" | "${mysql[@]}"
 			echo "GRANT ALL ON *.* TO '$MYSQL_USER_USER3'@'%' WITH GRANT OPTION ;" | "${mysql[@]}"
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+			echo "User 3 created"
 		fi
 
-		if [ "$MYSQL_USER_WP" -a "$MYSQL_PASSWORD_WP" ]; then
+		if [ "$MYSQL_USER_WP" ]; then
 			echo "CREATE USER '$MYSQL_USER_WP'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_WP' ;" | "${mysql[@]}"
 
 			if [ "$MYSQL_DATABASE_WP" ]; then
@@ -195,9 +198,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			fi
 			
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+			echo "WP user created"
 		fi		
 
-		if [ "$MYSQL_USER_PYDIO" -a "$MYSQL_PASSWORD_PYDIO" ]; then
+		if [ "$MYSQL_USER_PYDIO" ]; then
 			echo "CREATE USER '$MYSQL_USER_PYDIO'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_PYDIO' ;" | "${mysql[@]}"
 
 			if [ "$MYSQL_DATABASE_PYDIO" ]; then
@@ -205,9 +209,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			fi
 			
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+			echo "Pydio user created"
 		fi
 
-		if [ "$MYSQL_USER_PMA" -a "$MYSQL_PASSWORD_PMA" ]; then
+		if [ "$MYSQL_USER_PMA" ]; then
 			echo "CREATE USER '$MYSQL_USER_PMA'@'%' IDENTIFIED BY '$MYSQL_PASSWORD_PMA' ;" | "${mysql[@]}"
 
 			if [ "$MYSQL_DATABASE_PMA" ]; then
@@ -215,6 +220,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 			fi
 			
 			echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+			echo "PMA user created"
 		fi
 
 		cp /create_table.sql /docker-entrypoint-initdb.d/create_table_modif.sql
