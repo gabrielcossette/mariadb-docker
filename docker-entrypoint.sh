@@ -278,7 +278,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PYDIO'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_PYDIO}';"
 		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "ALTER USER '$MYSQL_USER_PMA'@'%' IDENTIFIED BY '${MYSQL_PASSWORD_PMA}';"
 		
-		cp /update_table /update_table_modif
+		cp /update_table.sql /update_table_modif.sql
 		sed -i -e "s/username1/$MYSQL_USER_USER1/g" /update_table_modif.sql
 		sed -i -e "s/username2/$MYSQL_USER_USER2/g" /update_table_modif.sql
 		sed -i -e "s/username3/$MYSQL_USER_USER3/g" /update_table_modif.sql
