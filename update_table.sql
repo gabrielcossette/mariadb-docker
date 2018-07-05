@@ -20,9 +20,9 @@ SET time_zone = "+00:00";
 
 USE phpmyadmin;
 
-UPDATE `pma__userconfig` SET password='{\"Console\\/Mode\":\"collapse\",\"2fa\":{\"backend\":\"application\",\"settings\":{\"secret\":\"SECRETUSER1\"}}}' WHERE login='username1';
-UPDATE `pma__userconfig` SET password='{\"Console\\/Mode\":\"collapse\",\"2fa\":{\"backend\":\"application\",\"settings\":{\"secret\":\"SECRETUSER2\"}}}' WHERE login='username2';
-UPDATE `pma__userconfig` SET password='{\"Console\\/Mode\":\"collapse\",\"2fa\":{\"backend\":\"application\",\"settings\":{\"secret\":\"SECRETUSER3\"}}}' WHERE login='username3';
+UPDATE `pma__userconfig` SET config_data='{\"Console\\/Mode\":\"collapse\",\"2fa\":{\"backend\":\"application\",\"settings\":{\"secret\":\"SECRETUSER1\"}}}' WHERE username='username1';
+UPDATE `pma__userconfig` SET config_data='{\"Console\\/Mode\":\"collapse\",\"2fa\":{\"backend\":\"application\",\"settings\":{\"secret\":\"SECRETUSER2\"}}}' WHERE username='username2';
+UPDATE `pma__userconfig` SET config_data='{\"Console\\/Mode\":\"collapse\",\"2fa\":{\"backend\":\"application\",\"settings\":{\"secret\":\"SECRETUSER3\"}}}' WHERE username='username3';
 
 FLUSH PRIVILEGES;
 

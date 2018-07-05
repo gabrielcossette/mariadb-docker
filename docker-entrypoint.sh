@@ -285,7 +285,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		sed -i -e "s/SECRETUSER1/$MYSQL_SECRET_USER1/g" /docker-entrypoint-initdb.d/update_table_modif.sql
 		sed -i -e "s/SECRETUSER2/$MYSQL_SECRET_USER2/g" /docker-entrypoint-initdb.d/update_table_modif.sql
 		sed -i -e "s/SECRETUSER3/$MYSQL_SECRET_USER3/g" /docker-entrypoint-initdb.d/update_table_modif.sql
-#		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" < /docker-entrypoint-initdb.d/update_table_modif.sql
+		mysql -hlocalhost -uroot -p"${MYSQL_ROOT_PASSWORD}" < /docker-entrypoint-initdb.d/update_table_modif.sql
 		
 		if ! kill -s TERM "$pid" || ! wait "$pid"; then
 			echo >&2 'MySQL init process failed.'
